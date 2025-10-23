@@ -42,7 +42,7 @@ python -m main --mode cli
 Start the FastAPI server:
 
 ```bash
-# Default (port 8000 with auto-port selection)
+# Default (localhost only on port 8000 with auto-port selection)
 python -m main --mode server
 
 # Specify custom port
@@ -51,9 +51,11 @@ python -m main --mode server --port 8080
 # Disable auto-port selection (fail if port is in use)
 python -m main --mode server --no-auto-port
 
-# Custom host and port
-python -m main --mode server --host 127.0.0.1 --port 9000
+# Bind to all interfaces (use with caution - ensure firewall is configured)
+python -m main --mode server --host 0.0.0.0 --port 9000
 ```
+
+**Security Note:** By default, the server binds to `127.0.0.1` (localhost only) for security. To make the server accessible from external networks, use `--host 0.0.0.0`, but ensure proper firewall rules and authentication are in place.
 
 ## API Endpoints
 

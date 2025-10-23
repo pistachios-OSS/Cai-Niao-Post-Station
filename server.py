@@ -122,13 +122,14 @@ async def process_query(request: QueryRequest):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-def find_available_port(start_port: int = 8000, max_attempts: int = 10) -> int:
+def find_available_port(start_port: int = 8000, max_attempts: int = 10, host: str = "127.0.0.1") -> int:
     """
     Find an available port starting from start_port.
     
     Args:
         start_port: The port to start searching from
         max_attempts: Maximum number of ports to try
+        host: Host address to test binding (default: 127.0.0.1)
         
     Returns:
         An available port number
@@ -141,7 +142,7 @@ def find_available_port(start_port: int = 8000, max_attempts: int = 10) -> int:
     for port in range(start_port, start_port + max_attempts):
         try:
             with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-                s.bind(("0.0.0.0", port))
+                s.bind((host, port))
                 logger.info(f"Found available port: {port}")
                 return port
         except OSError:
@@ -151,26 +152,38 @@ def find_available_port(start_port: int = 8000, max_attempts: int = 10) -> int:
     raise RuntimeError(f"No available port found in range {start_port}-{start_port + max_attempts - 1}")
 
 
-def run_server(host: str = "0.0.0.0", port: Optional[int] = None, auto_port: bool = True):
+def run_server(host: str = "127.0.0.1", port: Optional[int] = None, auto_port: bool = True):
     """
     Run the FastAPI server with configurable port handling.
     
     Args:
-        host: Host address to bind to
+        host: Host address to bind to (default: 127.0.0.1 for localhost only)
+              Use "0.0.0.0" to bind to all interfaces (security consideration)
         port: Port number to use (default: 8000)
         auto_port: If True, automatically find an available port if the specified port is in use
+    
+    Security Note:
+        By default, the server binds to 127.0.0.1 (localhost only) for security.
+        To make the server accessible from external networks, explicitly set host="0.0.0.0"
+        but ensure proper firewall and authentication are in place.
     """
     if port is None:
         port = int(os.getenv("PORT", "8000"))
     
+    # Get host from environment if set
+    host = os.getenv("HOST", host)
+    
     if auto_port:
         try:
-            port = find_available_port(start_port=port)
+            port = find_available_port(start_port=port, host=host)
         except RuntimeError as e:
             logger.error(f"Failed to find available port: {e}")
             raise
     
     logger.info(f"Starting server on {host}:{port}")
+    if host == "0.0.0.0":
+        logger.warning("Server is binding to all network interfaces (0.0.0.0). "
+                      "Ensure proper firewall and authentication are configured.")
     uvicorn.run(app, host=host, port=port, log_level="info")
 
 

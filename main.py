@@ -23,7 +23,7 @@ def run_cli():
     print(result)
 
 
-def run_server(host: str = "0.0.0.0", port: int = 8000, auto_port: bool = True):
+def run_server(host: str = "127.0.0.1", port: int = 8000, auto_port: bool = True):
     """Run in server mode."""
     try:
         from .server import run_server as start_server
@@ -42,8 +42,8 @@ if __name__ == "__main__":
     )
     parser.add_argument(
         "--host",
-        default="0.0.0.0",
-        help="Host address for server mode (default: 0.0.0.0)"
+        default="127.0.0.1",
+        help="Host address for server mode (default: 127.0.0.1 for localhost only, use 0.0.0.0 for all interfaces)"
     )
     parser.add_argument(
         "--port",
