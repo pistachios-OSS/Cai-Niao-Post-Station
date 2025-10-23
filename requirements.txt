@@ -1,0 +1,28 @@
+# Core dependencies
+fastapi>=0.104.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.0.0
+
+# LLM and embeddings
+transformers>=4.30.0
+torch>=2.0.0
+sentence-transformers>=2.2.0
+
+# Vector store and text processing
+langchain>=0.1.0
+langchain-community>=0.0.20
+langchain-core>=0.1.0
+langchain-text-splitters>=0.0.1
+faiss-cpu>=1.7.4
+
+# Document processing
+PyPDF2>=3.0.0
+python-docx>=0.8.11
+openpyxl>=3.0.0
+polars>=0.19.0
+
+# Chinese text processing
+jieba>=0.42.1
+
+# Utilities
+psutil>=5.9.0
