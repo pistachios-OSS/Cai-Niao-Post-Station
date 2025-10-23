@@ -5,7 +5,10 @@ Supports both CLI and server modes.
 import argparse
 import sys
 
-from .hr_agent import HRKnowledgeBaseAgent
+try:
+    from .hr_agent import HRKnowledgeBaseAgent
+except ImportError:
+    from hr_agent import HRKnowledgeBaseAgent
 
 
 def run_cli():
@@ -22,8 +25,11 @@ def run_cli():
 
 def run_server(host: str = "0.0.0.0", port: int = 8000, auto_port: bool = True):
     """Run in server mode."""
-    from .server import run_server
-    run_server(host=host, port=port, auto_port=auto_port)
+    try:
+        from .server import run_server as start_server
+    except ImportError:
+        from server import run_server as start_server
+    start_server(host=host, port=port, auto_port=auto_port)
 
 
 if __name__ == "__main__":

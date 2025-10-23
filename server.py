@@ -11,7 +11,10 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 import uvicorn
 
-from .hr_agent import HRKnowledgeBaseAgent
+try:
+    from .hr_agent import HRKnowledgeBaseAgent
+except ImportError:
+    from hr_agent import HRKnowledgeBaseAgent
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
